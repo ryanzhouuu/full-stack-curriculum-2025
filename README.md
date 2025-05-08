@@ -1,29 +1,63 @@
-# TPEO Learning Repository Template
-Template Repo for 12-week engineering course outline.
+# Welcome to the TPEO 2025 Full Stack Curriculum!
 
 # Fork Environment
 This repository will be using a fork structure, meaning that fellows will **commit to their own local respository** while **pulling new weekly content from this one**. Weekly content will be updated on the master branch, but a copy of all previous week's content will be available via branches.
 
-**Note: From now on we will be referring to the tpeo/<REPO_NAME> project as the **main** repo and other repositories as the **forked** repo. 
+**Note: From now on we will be referring to the tpeo/full-stack-curriculum-2025 project as the **main** repo and other repositories as the **forked** repo. 
 ## Forking the Repository 
-Navigate to a directory where you'd like to keep all your projects. If you haven't already, we would recommend creating a folder like ```GitHub_Projects```
-1. Go onto the **main** repository's Github page and click the **Fork** button
-2. Clone the repository locally in your project folder of choice by performing 
-    ``` 
+
+Navigate to a directory where you'd like to keep all your projects. If you haven't already, we recommend creating a folder like `TPEO` or `GitHub_Projects`.
+
+### Steps to Fork and Clone the Repository:
+
+1. Go to the **main** repository's GitHub page and click the **Fork** button.
+
+2. Clone the repository locally in your project folder of choice by running the following command:
+    ```bash
     git clone <your-repo-url>
     ```
-3. We need to set the **forked** repo's upstream url, allowing you to pull changes from the **main**, perform
+
+3. Change into the directory where the cloned repo is located by running:
+    ```bash
+    cd <your-repo-name>
     ```
-    git remote add upstream https://github.com/tpeo/<REPO_NAME>.git
+
+4. Set the **forked** repo's upstream URL, allowing you to pull changes from the **main** repository:
+    ```bash
+    git remote add upstream https://github.com/tpeo/full-stack-curriculum-2025.git
     ```
-4. Verify that the forked repo has the following remote properties by performing ```git remote -v```
+
+5. Verify that the forked repo has the following remote properties by running:
+    ```bash
+    git remote -v
     ```
-    $ git remote -v
-    > origin    https://github.com/<YOUR_GITHUB_NAME>/<REPO_NAME>.git (fetch)
-    > origin    https://github.com/<YOUR_GITHUB_NAME>/<REPO_NAME>.git(push)
-    > upstream  https://github.com/tpeo/<REPO_NAME>.git (fetch)
-    > upstream  https://github.com/tpeo/<REPO_NAME>.git (push)
+
+    You should see the following output:
+    ```bash
+    > origin    https://github.com/<YOUR_GITHUB_NAME>/full-stack-curriculum-2025.git (fetch)
+    > origin    https://github.com/<YOUR_GITHUB_NAME>/full-stack-curriculum-2025.git (push)
+    > upstream  https://github.com/tpeo/full-stack-curriculum-2025.git (fetch)
+    > upstream  https://github.com/tpeo/full-stack-curriculum-2025.git (push)
     ```
+
+### How to Check Your Current Directory
+
+To see what directory you're currently in, you can run the following command in your terminal:
+
+- **For Mac/Linux**:
+    ```bash
+    pwd
+    ```
+    This prints the full path of your current working directory.
+
+- **For Windows**:
+    ```bash
+    cd
+    ```
+    Running `cd` without any arguments will display the current directory path.
+
+This will help you ensure that you're in the right directory before running Git commands! 
+
 ## Commiting Changes To the Forked Repository
 
 1. Add files 
@@ -32,7 +66,7 @@ Navigate to a directory where you'd like to keep all your projects. If you haven
     ``` 
 2. Commit changes
     ```
-    git commit -m"<YOUR MESSAGE HERE>"
+    git commit -m "<YOUR MESSAGE HERE>"
     ```
 3. Push
     ```
@@ -52,42 +86,3 @@ You should pull approximately every week when new content arrives. These steps w
     ```
     git merge upstream/main
     ```
-
-## Suggesting Changes to the Main Repository 
-We realize that we're not perfect so we would love to hear constructive feedback and you can do so by opening a pull request to the main repository
-
-## Optional: Folder Generation Script
-This repository contains a script that allows users to easily create new folders for weekly lessons. Navigate to the repo folder and type 
-```
-source generate.sh <NAME_OF_FOLDER>
-```
-We recommend replacing <NAME_OF_FOLDER> with something like "Week_X". 
-
-
-# Content
-## Week 1
-TODO: 
-## Week 2: 
-TODO:
-## Week 3: 
-TODO: 
-## Week 4: 
-TODO: 
-## Week 5: 
-TODO: 
-## Week 6: 
-TODO: 
-## Week 7: 
-TODO: 
-## Week 8: 
-TODO: 
-## Week 9: 
-TODO: 
-## Week 10: 
-TODO: 
-## Week 11: 
-TODO: 
-## Week 12: 
-TODO: 
-
-
