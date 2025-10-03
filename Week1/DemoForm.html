@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ohio HTML Demo Form</title>
+</head>
+<body>
+    <h1>Create your Account</h1>
+    <hr />
+
+    <div>
+        <span>Name: </span>
+        <input type="text" placeholder="Enter your name" />
+    </div>
+    <br />
+
+    <div>
+        <span>Username: </span>
+        <input type="text" placeholder="Enter your username" />
+    </div>
+    <br />
+
+    <div>
+        <span>Password: </span>
+        <input type="password" placeholder="Enter your password" />
+    </div>
+    <br />
+
+    <div>
+        <span>Gender: </span>
+
+        <input type="radio" name="gender" value="male" id="male"/>
+        <label>Male</label>
+
+        <input type="radio" name="gender" value="female" id="female"/>
+        <label>Female</label>
+
+        <input type="radio" name="gender" value="other" id="other"/>
+        <label>Other</label>
+    </div>
+    <br />
+
+    <div>
+        <span>Major(s): </span>
+
+        <input type="checkbox" name="major" value="cs" id="cs"/>
+        <label>Computer Science</label>
+
+        <input type="checkbox" name="major" value="engineering" id="engineering"/>
+        <label>Engineering</label>
+        
+        <input type="checkbox" name="major" value="business" id="business"/>
+        <label>Business</label>
+    </div>
+    <br />
+
+    <div>
+        <span>Birthday: </span>
+        <input type="date" name="birthday" id="birthday"/>
+    </div>
+    <br />
+
+    <div>
+        <label>Year: </label>
+        <select name="year" id="year">
+            <option value="freshman">Freshman</option>
+            <option value="sophomore">Sophomore</option>
+            <option value="junior">Junior</option>
+            <option value="senior">Senior</option>
+        </select>
+    </div>
+    <br />
+
+    <div>
+        <label for="color">Color: </label>
+        <input type="color" name="color" id="color"/>
+    </div>
+    <br />
+
+    <button type="submit">Submit</button>
+</body>
+</html>
