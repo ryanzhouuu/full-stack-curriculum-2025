@@ -35,14 +35,55 @@
     height: 60%;
     width: 90%;
   }
+
+  #weather-cards-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  #city-name {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  #current-temp {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  #current-weather {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .weather-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+  }
+
+  .weather-icon {
+    width: 100px;
+    height: 100px;
+    margin-top: 10px;
+  }
   
   #side-container {
     height: 100%;
     width: 34%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
+    padding: 20px;
   }
   
   #search-input {
