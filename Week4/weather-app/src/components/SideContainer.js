@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+
 import "../styles/SideContainer.css"; // Import the CSS file for SideContainer
 
 function SideContainer(props) {
@@ -96,6 +96,7 @@ function SideContainer(props) {
       lon: lon,
     };
     console.log(city);
+    props.updateCityData(city);
   }
 
   return (
