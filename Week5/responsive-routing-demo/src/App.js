@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext } from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import Button from "@mui/material/Button";
 import "./App.css";
 
 // Create a Context for the user
@@ -36,14 +37,14 @@ const Profile = () => {
   const { user, setUser } = useContext(UserContext);
 
   const changeName = () => {
-    setUser({ ...user, name: "John Doe" });
+    setUser({ ...user, name: "Ryan" });
   };
 
   return (
     <div className="content">
       <h1>Profile Page</h1>
       <p>Name: {user.name}</p>
-      <button onClick={changeName}>Change Name</button>
+      <Button variant="contained" onClick={changeName}>Change Name</Button>
     </div>
   );
 };
