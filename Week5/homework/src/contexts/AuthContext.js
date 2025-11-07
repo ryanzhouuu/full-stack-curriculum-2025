@@ -16,22 +16,33 @@ export const useAuth = () => {
 export function AuthProvider({ children }) {
     const navigate = useNavigate();
     
-    
+    const [user, setUser] = useState(null);
+    const [error, setError] = useState(null);
 
     // Login function that validates the provided username and password.
-    const login = () => {
-        
+    const login = ({username, password}) => {
+        if (username === "admin" && password === "admin") {
+            setUser({ username });
+            navigate("/");
+        } else {
+            setError("Invalid username or password");
+        }
     };
 
     // Logout function to clear user data and redirect to the login page.
     const logout = () => {
-        
+        setUser(null);
+        setError(null);
+        navigate("/login");
     };
 
     // An object containing our state and functions related to authentication.
     // By using this context, child components can easily access and use these without prop drilling.
     const contextValue = {
-        
+        user,
+        login,
+        logout,
+        error,
     };
 
     // The AuthProvider component uses the AuthContext.Provider to wrap its children.

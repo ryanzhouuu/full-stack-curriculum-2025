@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Typography,
@@ -10,23 +10,19 @@ import {
   Checkbox,
   Box,
   Grid,
+  CircularProgress,
 } from "@mui/material";
 import Header from "./Header";
-import { useNavigate } from 'react-router-dom';
-//import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function HomePage() {
   const navigate = useNavigate();
 
+  const { user } = useAuth();
+
   // State to hold the list of tasks.
-  const [taskList, setTaskList] = useState([
-    // Sample tasks to start with.
-    { name: "create a todo app", finished: false },
-    { name: "wear a mask", finished: false },
-    { name: "play roblox", finished: false },
-    { name: "be a winner", finished: true },
-    { name: "become a tech bro", finished: true },
-  ]);
+  const [taskList, setTaskList] = useState([]);
 
   // State for the task name being entered by the user.
   const [newTaskName, setNewTaskName] = useState("");
@@ -34,16 +30,45 @@ export default function HomePage() {
   // TODO: Support retrieving your todo list from the API.
   // Currently, the tasks are hardcoded. You'll need to make an API call
   // to fetch the list of tasks instead of using the hardcoded data.
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    fetch(`https://tpeo-todo.vercel.app/tasks?username=${user.username}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setTaskList(
+          data.map((task) => ({
+            id: task.id,
+            name: task.name,
+            finished: task.finished,
+          }))
+        );
+      });
+  }, [user, navigate]);
 
   function handleAddTask() {
     // Check if task name is provided and if it doesn't already exist.
     if (newTaskName && !taskList.some((task) => task.name === newTaskName)) {
-
       // TODO: Support adding todo items to your todo list through the API.
       // In addition to updating the state directly, you should send a request
       // to the API to add a new task and then update the state based on the response.
-
-      setTaskList([...taskList, { name: newTaskName, finished: false }]);
+      fetch(`https://tpeo-todo.vercel.app/tasks`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: newTaskName, username: user.username }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setTaskList([
+            ...taskList,
+            { id: data.id, name: newTaskName, finished: false },
+          ]);
+        });
       setNewTaskName("");
     } else if (taskList.some((task) => task.name === newTaskName)) {
       alert("Task already exists!");
@@ -69,6 +94,10 @@ export default function HomePage() {
     return unfinishedTasks === 1
       ? `You have 1 unfinished task`
       : `You have ${unfinishedTasks} tasks left to do`;
+  }
+
+  if (!user) {
+    return <CircularProgress sx={{ margin: "auto" }} />;
   }
 
   return (
@@ -134,9 +163,7 @@ export default function HomePage() {
                   dense
                   onClick={() => toggleTaskCompletion(task)}
                 >
-                  <Checkbox
-                    checked={task.finished}
-                  />
+                  <Checkbox checked={task.finished} />
                   <ListItemText primary={task.name} />
                 </ListItem>
               ))}
