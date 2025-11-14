@@ -4,7 +4,7 @@ import { useAuth } from "../contexts/AuthContext";
 
 function Header() {
   
-  const { logout, user } = useAuth();
+  const { logout, currentUser } = useAuth();
   
   return (
     <AppBar
@@ -20,7 +20,7 @@ function Header() {
     >
       <Toolbar>
         <Typography variant="h4" sx={{ flexGrow: 1 }} fontWeight='bold'>
-          {`${user.username}'s To-Do List`}
+          {`${currentUser}'s To-Do List`}
         </Typography>
         <Button
           onClick={logout} 
