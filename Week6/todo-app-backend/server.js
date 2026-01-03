@@ -43,12 +43,12 @@ app.get("/tasks", async (req, res) => {
 
 // GET: Endpoint to retrieve all tasks for a user
 // ...
-app.get("/tasks/:userId", async (req, res) => {
+app.get("/tasks/:user", async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const user = req.params.user;
     const snapshot = await db
       .collection("tasks")
-      .where("userId", "==", userId)
+      .where("user", "==", user)
       .get();
     let tasks = [];
     snapshot.forEach((doc) => {
@@ -62,11 +62,11 @@ app.get("/tasks/:userId", async (req, res) => {
 
 // POST: Endpoint to add a new task
 // ...
-app.post("/tasks/:userId", async (req, res) => {
+app.post("/tasks/:user", async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const user = req.params.user;
     const task = req.body;
-    const taskRef = await db.collection("tasks").add({ ...task, userId });
+    const taskRef = await db.collection("tasks").add({ ...task, user });
     res.status(201).send({ id: taskRef.id, ...task });
   } catch (error) {
     res.status(500).send(error.message);
@@ -75,9 +75,9 @@ app.post("/tasks/:userId", async (req, res) => {
 
 // DELETE: Endpoint to remove a task
 // ...
-app.delete("/tasks/:userId/:taskId", async (req, res) => {
+app.delete("/tasks/:user/:taskId", async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const user = req.params.user;
     const taskId = req.params.taskId;
     const taskRef = await db.collection("tasks").doc(taskId).delete();
     res.status(200).send({ id: taskId });
