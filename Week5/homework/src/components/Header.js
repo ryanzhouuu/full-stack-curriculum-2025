@@ -5,6 +5,8 @@ import { useAuth } from "../contexts/AuthContext";
 function Header() {
   
   const { logout, currentUser } = useAuth();
+
+  const username = currentUser.email.split("@")[0];
   
   return (
     <AppBar
@@ -20,7 +22,7 @@ function Header() {
     >
       <Toolbar>
         <Typography variant="h4" sx={{ flexGrow: 1 }} fontWeight='bold'>
-          {`${currentUser}'s To-Do List`}
+          {`${username}'s To-Do List`}
         </Typography>
         <Button
           onClick={logout} 

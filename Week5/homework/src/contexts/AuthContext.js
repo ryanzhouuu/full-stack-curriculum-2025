@@ -1,5 +1,5 @@
 // Importing necessary hooks and functionalities
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { initializeApp } from "firebase/app";
 import {
@@ -7,6 +7,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
+  onAuthStateChanged,
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -39,14 +40,32 @@ export function AuthProvider({ children }) {
 
   const [currentUser, setCurrentUser] = useState(null);
   const [loginError, setLoginError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+      setIsLoading(false);
+    });
+    return unsubscribe;
+  }, []);
 
   const register = (email, password) => {
+    if (!email || !password) {
+      setLoginError("ERROR: Please enter an email and password");
+      return;
+    }
+    if (!email.includes("@") || !email.includes(".")) {
+      setLoginError("ERROR: Please enter a valid email");
+      return;
+    }
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         setCurrentUser(userCredential.user);
         userCredential.user.getIdToken().then((accessToken) => {
           console.log(accessToken);
         });
+        setLoginError(null);
         navigate("/");
       })
       .catch((error) => {
@@ -56,10 +75,19 @@ export function AuthProvider({ children }) {
   };
 
   // Login function that validates the provided username and password.
-  const login = (username, password) => {
-    signInWithEmailAndPassword(auth, username, password)
+  const login = (email, password) => {
+    if (!email || !password) {
+      setLoginError("ERROR: Please enter an email and password");
+      return;
+    }
+    if (!email.includes("@") || !email.includes(".")) {
+      setLoginError("ERROR: Please enter a valid email");
+      return;
+    }
+    signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         setCurrentUser(userCredential.user);
+        setLoginError(null);
         navigate("/");
       })
       .catch((error) => {
@@ -83,7 +111,12 @@ export function AuthProvider({ children }) {
     register,
     logout,
     loginError,
+    isLoading,
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   // The AuthProvider component uses the AuthContext.Provider to wrap its children.
   // This makes the contextValue available to all children and grandchildren.

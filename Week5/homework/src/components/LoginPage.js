@@ -7,27 +7,25 @@ import {
   Box,
   Alert,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import { useAuth } from "../contexts/AuthContext";
 
 function LoginPage() {
   // Access the MUI theme for potential theme-related functionalities.
-  const theme = useTheme();
 
   // TODO: Extract login function and error from our authentication context.
   const { login, register, loginError } = useAuth();
 
   // State to hold the username and password entered by the user.
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   // TODO: Handle login function.
   const handleLogin = () => {
-    login(username, password);
+    login(email, password);
   };
 
   const handleRegister = () => {
-    register(username, password);
+    register(email, password);
   };
 
   return (
@@ -59,13 +57,13 @@ function LoginPage() {
             margin="normal"
             required
             fullWidth
-            id="username"
-            label="Username"
+            id="email"
+            label="Email"
             InputLabelProps={{ shrink: true }}
-            placeholder="admin"
+            placeholder="example@example.com"
             autoFocus
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
             variant="outlined"
@@ -76,7 +74,7 @@ function LoginPage() {
             type="password"
             id="password"
             InputLabelProps={{ shrink: true }}
-            placeholder="racecar"
+            placeholder="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />

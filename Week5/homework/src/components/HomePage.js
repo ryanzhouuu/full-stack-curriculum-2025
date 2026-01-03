@@ -34,14 +34,16 @@ export default function HomePage() {
     if (!currentUser) {
       navigate("/login");
     } else {
-      fetch(`https://tpeo-todo.vercel.app/tasks?username=${currentUser}`)
+      setTaskList([]);
+
+      fetch(`https://tpeo-todo-backend-green.vercel.app/tasks/${currentUser.uid}`)
         .then((response) => response.json())
         .then((data) => {
           setTaskList(data);
         })
         .catch((error) => console.error("Error fetching tasks:", error));
     }
-  }, [currentUser]);
+  }, [currentUser, navigate]);
 
   function handleAddTask() {
     // Check if task name is provided and if it doesn't already exist.
@@ -49,13 +51,12 @@ export default function HomePage() {
       // TODO: Support adding todo items to your todo list through the API.
       // In addition to updating the state directly, you should send a request
       // to the API to add a new task and then update the state based on the response.
-      fetch("https://tpeo-todo.vercel.app/tasks", {
+      fetch(`https://tpeo-todo-backend-green.vercel.app/tasks/${currentUser.uid}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          user: currentUser,
           name: newTaskName,
           finished: false,
         }),
@@ -77,7 +78,7 @@ export default function HomePage() {
     // Similar to adding tasks, when checking off a task, you should send a request
     // to the API to update the task's status and then update the state based on the response.
 
-    fetch(`https://tpeo-todo.vercel.app/tasks/${task.id}`, {
+    fetch(`https://tpeo-todo-backend-green.vercel.app/tasks/${task.id}`, {
       method: "DELETE",
     })
       .then((response) => response.json())
