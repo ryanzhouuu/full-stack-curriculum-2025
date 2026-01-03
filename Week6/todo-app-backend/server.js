@@ -75,9 +75,8 @@ app.post("/tasks/:user", async (req, res) => {
 
 // DELETE: Endpoint to remove a task
 // ...
-app.delete("/tasks/:user/:taskId", async (req, res) => {
+app.delete("/tasks/:taskId", async (req, res) => {
   try {
-    const user = req.params.user;
     const taskId = req.params.taskId;
     const taskRef = await db.collection("tasks").doc(taskId).delete();
     res.status(200).send({ id: taskId });
