@@ -29,6 +29,7 @@ function MainContainer(props) {
   null or an empty object.
   */
 
+  const [currentWeather, setCurrentWeather] = useState(null);
   const [weather, setWeather] = useState(null);
 
   /*
@@ -47,33 +48,68 @@ function MainContainer(props) {
 
   useEffect(() => {
     if (props.selectedCity) {
+      // Fetch current weather
+      fetch(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${props.selectedCity.lat}&lon=${props.selectedCity.lon}&appid=${props.apiKey}&units=imperial`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          setCurrentWeather(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching current weather data:", error);
+        });
+
+      // Fetch forecast data
       fetch(
         `https://api.openweathermap.org/data/2.5/forecast?lat=${props.selectedCity.lat}&lon=${props.selectedCity.lon}&appid=${props.apiKey}&units=imperial`
       )
         .then((response) => response.json())
         .then((data) => {
-          // Filter to get one forecast per day (around 12:00 PM each day)
-          const dailyForecasts = data.list.filter((item, index) => {
+          // Process forecast data to get high/low temperatures for each day
+          const dailyForecasts = [];
+          const groupedByDay = {};
+          
+          // Group forecast data by day
+          data.list.forEach((item) => {
             const date = new Date(item.dt_txt);
-            // Get forecasts around noon (12:00) or closest to noon
-            return (
-              date.getHours() === 12 || (index === 0 && date.getHours() < 12)
-            );
-          });
-          // If we don't have exactly 5 days, use the first item for today and then every 8th item
-          // (since API returns data every 3 hours, every 8th item is approximately daily)
-          if (dailyForecasts.length === 0 || dailyForecasts.length < 5) {
-            const simplifiedDaily = [];
-            for (let i = 0; i < 5 && i * 8 < data.list.length; i++) {
-              simplifiedDaily.push(data.list[i * 8]);
+            const dayKey = date.toDateString();
+            
+            if (!groupedByDay[dayKey]) {
+              groupedByDay[dayKey] = [];
             }
-            setWeather(simplifiedDaily);
-          } else {
-            setWeather(dailyForecasts.slice(0, 5)); // Take only first 5 days
-          }
+            groupedByDay[dayKey].push(item);
+          });
+          
+          // Calculate high/low for each day
+          const sortedDays = Object.keys(groupedByDay).sort((a, b) => {
+            return new Date(a) - new Date(b);
+          });
+          
+          // Get next 5 days (skip today if we have current weather)
+          const today = new Date().toDateString();
+          const daysToProcess = sortedDays.filter(day => day !== today).slice(0, 5);
+          
+          daysToProcess.forEach((dayKey) => {
+            const dayData = groupedByDay[dayKey];
+            const temps = dayData.map(item => item.main.temp);
+            const highTemp = Math.max(...temps);
+            const lowTemp = Math.min(...temps);
+            
+            // Use the first item for icon and description
+            dailyForecasts.push({
+              date: dayKey,
+              highTemp: highTemp,
+              lowTemp: lowTemp,
+              description: dayData[0].weather[0].description,
+              icon: dayData[0].weather[0].icon,
+            });
+          });
+          
+          setWeather(dailyForecasts);
         })
         .catch((error) => {
-          console.error("Error fetching weather data:", error);
+          console.error("Error fetching forecast data:", error);
         });
     }
   }, [props.selectedCity, props.apiKey]);
@@ -82,35 +118,55 @@ function MainContainer(props) {
     <div id="main-container">
       {props.selectedCity && (
         <>
-          <h1>5-Day Forecast</h1>
           <h1 id="city-name">
             {props.selectedCity.name}, {props.selectedCity.state}
           </h1>
         </>
       )}
-      <div id="weather-container">
-        {/* 
-        STEP 4: Display Weather Data.
-        
-        With the fetched weather data stored in state, use conditional rendering (perhaps the ternary operator) 
-        to display it here. Make sure to check if the 'weather' state has data before trying to access its 
-        properties to avoid runtime errors. 
-
-        Break down the data object and figure out what you want to display (e.g., temperature, weather description).
-        This is a good section to play around with React components! Create your own - a good example could be a WeatherCard
-        component that takes in props, and displays data for each day of the week.
-        */}
-        {weather &&
-          weather.map((weather, index) => (
-            <WeatherCard
-              key={index}
-              date={formatDate(index)}
-              temp={weather.main.temp}
-              description={weather.weather[0].description}
-              icon={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
-            />
-          ))}
-      </div>
+      
+      {/* Current Weather Display */}
+      {currentWeather && (
+        <div id="current-weather">
+          <h2>Current Weather</h2>
+          <div className="current-weather-content">
+            <div className="current-weather-main">
+              <img 
+                src={`https://openweathermap.org/img/wn/${currentWeather.weather[0].icon}@2x.png`} 
+                alt={currentWeather.weather[0].description}
+                className="current-weather-icon"
+              />
+              <div className="current-weather-info">
+                <p className="current-temp">{Math.round(currentWeather.main.temp)}°F</p>
+                <p className="current-description">{currentWeather.weather[0].description}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* 5-Day Forecast */}
+      {weather && weather.length > 0 && (
+        <>
+          <h2 id="forecast-title">5-Day Forecast</h2>
+          <div id="weather-container">
+            {weather.map((dayForecast, index) => {
+              // Since we skip today, index 0 is tomorrow (1 day from now)
+              const formattedDate = formatDate(index + 1);
+              
+              return (
+                <WeatherCard
+                  key={index}
+                  date={formattedDate}
+                  highTemp={Math.round(dayForecast.highTemp)}
+                  lowTemp={Math.round(dayForecast.lowTemp)}
+                  description={dayForecast.description}
+                  icon={`https://openweathermap.org/img/wn/${dayForecast.icon}@2x.png`}
+                />
+              );
+            })}
+          </div>
+        </>
+      )}
     </div>
   );
 }

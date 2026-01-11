@@ -1,7 +1,9 @@
-
+import React, { useRef } from "react";
 import "../styles/SideContainer.css"; // Import the CSS file for SideContainer
 
 function SideContainer(props) {
+  const debounceTimerRef = useRef(null);
+
   // We are using the same search() and renderSearchResults() given to you from the previous HW!
   function search() {
     // takes the value from the search input
@@ -25,10 +27,17 @@ function SideContainer(props) {
   function renderSearchResults(searchResults) {
     // selects the unordered list element search-results-list
     const ul = document.querySelector("#search-results-list");
-    // shows the unordered list if was hidden previously
-    ul.classList.remove("hidden");
     // clears out any list items from the previous search
     ul.innerHTML = "";
+    
+    // If no results, hide the list
+    if (!searchResults || searchResults.length === 0) {
+      ul.classList.add("hidden");
+      return;
+    }
+    
+    // shows the unordered list if was hidden previously
+    ul.classList.remove("hidden");
     // loops through each search result and creates and attaches a list item for the unordered list
     searchResults.forEach((searchResult, index) => {
       // creates a new unordered list element
@@ -99,13 +108,42 @@ function SideContainer(props) {
     props.updateCityData(city);
   }
 
+  // Handle input change with debouncing
+  function handleInputChange(e) {
+    const searchInput = e.target.value;
+    
+    // Clear previous timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+    
+    // Hide results if input is empty
+    if (!searchInput.trim()) {
+      const ul = document.querySelector("#search-results-list");
+      if (ul) {
+        ul.classList.add("hidden");
+        ul.innerHTML = "";
+      }
+      return;
+    }
+    
+    // Set new timer to search after user stops typing (300ms delay)
+    debounceTimerRef.current = setTimeout(() => {
+      search();
+    }, 300);
+  }
+
   return (
     <div id="side-container">
       <div>
-        <input id="search-input" placeholder="search for a city"></input>
-        <button id="search-button" onClick={search}>
+        <input 
+          id="search-input" 
+          placeholder="search for a city"
+          onChange={handleInputChange}
+        ></input>
+        {/* <button id="search-button" onClick={search}>
           search
-        </button>
+        </button> */}
       </div>
       <ul id="search-results-list"></ul>
     </div>
